@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0d4b4f">
+<meta name="description" content="Gigamon: Island Spirits — a tropical creature-collecting adventure set in Sweetwater Bay, Jamaica.">
+<title>Gigamon: Island Spirits</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============================== TITLE ============================== -->
+  <section id="title-screen" class="screen title-screen" aria-label="Gigamon title screen">
+    <canvas id="title-bg" aria-hidden="true"></canvas>
+    <div class="title-sunwash" aria-hidden="true"></div>
+    <div class="title-ui">
+      <header class="brand">
+        <div class="logo-wrap">
+          <h1 class="logo"><span>GIGA</span><span class="logo-accent">MON</span></h1>
+          <div class="logo-palm" aria-hidden="true">🌴</div>
+        </div>
+        <p class="subtitle"><span class="rule"></span> Island Spirits <span class="rule"></span></p>
+        <p class="tagline">A tropical creature-collecting adventure · Sweetwater Bay, Jamaica</p>
+      </header>
+
+      <div class="starter-picker" aria-label="Choose your first partner">
+        <p class="starter-label">Choose your first partner</p>
+        <div class="starter-row" role="radiogroup" aria-label="Starter partner">
+          <button class="starter-card selected" data-starter="pimenta" role="radio" aria-checked="true">
+            <span class="select-check" aria-hidden="true">✓</span>
+            <span class="starter-art"><canvas width="120" height="120" data-creature="pimenta" aria-hidden="true"></canvas></span>
+            <span class="starter-name">Pimenta</span>
+            <span class="type-chip type-flame">Flame</span>
+            <span class="starter-blurb">Spicy &amp; bold</span>
+          </button>
+          <button class="starter-card" data-starter="turtide" role="radio" aria-checked="false">
+            <span class="select-check" aria-hidden="true">✓</span>
+            <span class="starter-art"><canvas width="120" height="120" data-creature="turtide" aria-hidden="true"></canvas></span>
+            <span class="starter-name">Turtide</span>
+            <span class="type-chip type-tide">Tide</span>
+            <span class="starter-blurb">Calm &amp; steady</span>
+          </button>
+          <button class="starter-card" data-starter="ackee" role="radio" aria-checked="false">
+            <span class="select-check" aria-hidden="true">✓</span>
+            <span class="starter-art"><canvas width="120" height="120" data-creature="ackee" aria-hidden="true"></canvas></span>
+            <span class="starter-name">Ackee</span>
+            <span class="type-chip type-leaf">Leaf</span>
+            <span class="starter-blurb">Bright &amp; cheerful</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="title-actions">
+        <button id="start-btn" class="btn btn-primary btn-xl">Start</button>
+        <button id="continue-btn" class="btn btn-ghost btn-lg" hidden>Continue Journey</button>
+      </div>
+
+      <footer class="title-foot">
+        <span class="foot-hint"><kbd>WASD</kbd> / <kbd>Arrows</kbd> move · <kbd>Space</kbd> talk</span>
+        <div class="foot-tools">
+          <button id="title-help" class="link-btn">How to play</button>
+          <button id="title-mute" class="icon-btn" aria-label="Toggle sound" title="Toggle sound">Sound: on</button>
+        </div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- ============================== WORLD ============================== -->
+  <section id="world-screen" class="screen world-screen" hidden aria-label="Island of Sweetwater Bay">
+    <canvas id="world-canvas" aria-label="Overworld. Move with arrow keys or WASD."></canvas>
+    <div class="world-wash" aria-hidden="true"></div>
+
+    <div id="hud" class="hud">
+      <div class="hud-left">
+        <div class="plate area-plate">
+          <span id="area-name">Sweetwater Bay</span>
+          <small>Gigamon Isles · Jamaica</small>
+        </div>
+        <button id="quest-ribbon" class="quest-ribbon" title="Quest log">
+          <span class="quest-label">Wardens</span>
+          <span class="badge-slots">
+            <span class="badge-slot" data-badge="fern"><i class="badge-icon leaf"></i></span>
+            <span class="badge-slot" data-badge="finn"><i class="badge-icon wave"></i></span>
+            <span class="badge-slot" data-badge="zeph"><i class="badge-icon bolt"></i></span>
+          </span>
+          <span id="quest-text" class="quest-text">0 / 3 badges</span>
+        </button>
+      </div>
+      <div class="hud-right">
+        <div class="stat-pill" title="Coins"><span class="coin-icon" aria-hidden="true"></span><span id="coin-count">300</span></div>
+        <div class="stat-pill" title="Coconut Balls"><span class="ball-icon" aria-hidden="true"></span><span id="ball-count">3</span></div>
+        <button class="hud-btn" data-open="party">Team</button>
+        <button class="hud-btn" data-open="bag">Bag</button>
+        <button class="hud-btn" data-open="dex">Dex</button>
+        <button class="hud-btn hud-btn-icon" data-open="help" aria-label="Help">?</button>
+        <button id="hud-mute" class="hud-btn hud-btn-icon" aria-label="Toggle sound" title="Sound">♪</button>
+      </div>
+    </div>
+
+    <div id="hint" class="hint" hidden></div>
+
+    <div id="dialogue" class="dialogue" hidden aria-live="polite">
+      <canvas id="dialogue-portrait" width="96" height="112" aria-hidden="true"></canvas>
+      <div class="dialogue-main">
+        <div class="dialogue-head">
+          <span id="dialogue-name">Professor Pimento</span>
+          <span id="dialogue-role" class="dialogue-role"></span>
+        </div>
+        <p id="dialogue-text"></p>
+        <div id="dialogue-choices" class="dialogue-choices"></div>
+        <div id="dialogue-next" class="dialogue-next"><kbd>Space</kbd><span>continue</span></div>
+      </div>
+    </div>
+
+    <div id="interact-prompt" class="interact-prompt" hidden><kbd>Space</kbd><span id="interact-label">Talk</span></div>
+
+    <div id="touch-controls" class="touch-controls" aria-hidden="true">
+      <div class="dpad">
+        <button class="dpad-btn up" data-dir="up" aria-label="Move up">▲</button>
+        <button class="dpad-btn left" data-dir="left" aria-label="Move left">◀</button>
+        <button class="dpad-btn right" data-dir="right" aria-label="Move right">▶</button>
+        <button class="dpad-btn down" data-dir="down" aria-label="Move down">▼</button>
+        <div class="dpad-center"></div>
+      </div>
+      <div class="face-buttons">
+        <button id="touch-b" class="face-btn b" aria-label="Menu">B</button>
+        <button id="touch-a" class="face-btn a" aria-label="Talk or confirm">A</button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" hidden></div>
+    <div id="transition" class="transition" hidden></div>
+  </section>
+
+  <!-- ============================== BATTLE ============================== -->
+  <section id="battle-screen" class="screen battle-screen" hidden aria-label="Gigamon battle">
+    <div class="battle-stage">
+      <canvas id="battle-canvas" aria-label="Battle scene"></canvas>
+      <div class="battle-top">
+        <div id="enemy-card" class="battle-card enemy-card">
+          <div class="bc-head"><span id="enemy-name">Pimenta</span><span id="enemy-level" class="bc-level">Lv. 5</span></div>
+          <div class="bc-types" id="enemy-types"></div>
+          <div class="hp-line">
+            <div class="hp-track"><div id="enemy-hp" class="hp-fill"></div></div>
+            <span id="enemy-hp-text" class="hp-text">20/20</span>
+          </div>
+          <div id="enemy-status" class="status-chip" hidden></div>
+        </div>
+        <div id="battle-trainer" class="battle-trainer" hidden></div>
+        <div id="player-card" class="battle-card player-card">
+          <div class="bc-head"><span id="player-name">Turtide</span><span id="player-level" class="bc-level">Lv. 5</span></div>
+          <div class="bc-types" id="player-types"></div>
+          <div class="hp-line">
+            <div class="hp-track"><div id="player-hp" class="hp-fill"></div></div>
+            <span id="player-hp-text" class="hp-text">20/20</span>
+          </div>
+          <div id="player-xp" class="xp-line"><div class="xp-track"><div id="player-xp-fill" class="xp-fill"></div></div><span id="player-xp-text">XP 0/30</span></div>
+          <div id="player-status" class="status-chip" hidden></div>
+        </div>
+      </div>
+      <div id="battle-fx" class="battle-fx" aria-hidden="true"></div>
+      <div id="ball-anim" class="ball-anim" hidden></div>
+    </div>
+
+    <div class="battle-ui">
+      <div class="battle-message">
+        <p id="battle-text">What will you do?</p>
+        <div id="battle-sub" class="battle-sub"></div>
+      </div>
+      <div class="battle-menu" id="battle-menu">
+        <div id="battle-main-menu" class="battle-menu-main">
+          <button class="battle-action fight" data-action="fight"><span>Fight</span><small>Choose a move</small></button>
+          <button class="battle-action bag" data-action="bag"><span>Bag</span><small>Items &amp; balls</small></button>
+          <button class="battle-action team" data-action="team"><span>Team</span><small>Switch partner</small></button>
+          <button class="battle-action run" data-action="run"><span>Run</span><small>Escape wild</small></button>
+        </div>
+        <div id="battle-submenu" class="battle-submenu" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== MODAL ============================== -->
+  <div id="modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" data-close-modal aria-label="Close">×</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <div id="flash" class="flash" hidden></div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/map.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/art.js"></script>
+<script src="js/artworld.js"></script>
+<script src="js/artscenes.js"></script>
+<script src="js/world.js"></script>
+<script src="js/battle.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
