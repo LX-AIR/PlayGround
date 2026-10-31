@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#07130f" />
+    <meta name="description" content="SOUL YARD — hunt, bond and battle mythic spirits across a Jamaica-inspired island in this 3D action RPG." />
+    <title>SOUL YARD — Legends of Pimento Isle</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%2307130f' stroke='%23f4c95d' stroke-width='5'/><path d='M50 16l9 24 25 2-20 16 7 25-21-14-21 14 7-25-20-16 25-2z' fill='%2335d0a5'/></svg>" />
+    <script type="module" crossorigin src="./assets/index-BmQo6Txm.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-wZkPUVE2.css">
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="game-canvas" aria-label="Soul Yard game world"></canvas>
+      <div id="world-tint"></div>
+      <div id="vignette"></div>
+      <div id="hurt-flash"></div>
+      <div id="zone-banner"><span>NOW ENTERING</span><b>PIMENTO BEACH</b></div>
+      <div id="grain"></div>
+
+      <div id="hud" class="hidden" aria-live="off">
+        <section id="vitals" class="hud-panel">
+          <div class="crest">
+            <div class="crest-ring"><span id="player-level">1</span></div>
+            <div class="crest-label"><small>WARDEN</small><strong>KAI</strong></div>
+          </div>
+          <div class="bars">
+            <div class="bar-row">
+              <span class="bar-icon">♥</span>
+              <div class="bar hp"><i id="hp-fill"></i><em id="hp-ghost"></em></div>
+              <b id="hp-text">100</b>
+            </div>
+            <div class="bar-row shield-row hidden" id="shield-row">
+              <span class="bar-icon">◈</span>
+              <div class="bar shield"><i id="shield-fill"></i></div>
+              <b id="shield-text">25</b>
+            </div>
+            <div class="bar-row">
+              <span class="bar-icon">✦</span>
+              <div class="bar aether"><i id="aether-fill"></i></div>
+              <b id="aether-text">100</b>
+            </div>
+            <div class="bar-row tiny">
+              <span class="bar-icon">◈</span>
+              <div class="bar xp"><i id="xp-fill"></i></div>
+              <b id="xp-text">0 / 100</b>
+            </div>
+          </div>
+        </section>
+
+        <div id="compass" class="hud-panel">
+          <div class="compass-window"><div id="compass-strip"></div></div>
+          <div class="compass-needle"></div>
+          <div id="compass-markers"></div>
+        </div>
+
+        <section id="quest-panel" class="hud-panel">
+          <div class="panel-title"><span class="sigil">✦</span><span>ISLAND JOURNAL</span></div>
+          <h3 id="quest-title">A Call Across the Water</h3>
+          <p id="quest-desc">Find Elder Nya in Nine Mile Village.</p>
+          <div class="quest-progress"><i id="quest-progress-fill"></i></div>
+          <div class="quest-meta"><span id="quest-progress-text">0 / 3 wardens</span><span id="quest-distance">— m</span></div>
+        </section>
+
+        <div id="minimap-wrap" class="hud-panel">
+          <canvas id="minimap" width="220" height="220"></canvas>
+          <div class="minimap-ring"></div>
+          <div class="minimap-n">N</div>
+          <div id="minimap-caption">PIMENTO ISLE</div>
+        </div>
+
+        <div id="crosshair" aria-hidden="true">
+          <i class="ch ch-t"></i><i class="ch ch-b"></i><i class="ch ch-l"></i><i class="ch ch-r"></i>
+          <span class="ch-dot"></span>
+          <div id="hitmarker"><i></i><i></i><i></i><i></i></div>
+          <div id="target-tag"><span id="target-name">—</span><em id="target-hp"></em></div>
+          <div id="capture-tag">SOUL EXPOSED · THROW ORB</div>
+        </div>
+
+        <div id="damage-layer"></div>
+        <div id="toasts"></div>
+
+        <section id="companion-card" class="hud-panel hidden">
+          <div class="comp-portrait"><img id="comp-img" alt="" /></div>
+          <div class="comp-info">
+            <span class="eyebrow">BONDED SPIRIT</span>
+            <strong id="comp-name">Lantern</strong>
+            <div class="comp-type" id="comp-type">SPIRIT</div>
+            <div class="comp-cooldown"><i id="comp-cd-fill"></i></div>
+            <small id="comp-ability">Q · FOXFIRE</small>
+          </div>
+        </section>
+
+        <div id="party">
+          <div class="party-slot empty" data-slot="0"><span class="slot-key">1</span><div class="slot-art"></div><div class="slot-meta"><b>—</b><small>EMPTY</small></div></div>
+          <div class="party-slot empty" data-slot="1"><span class="slot-key">2</span><div class="slot-art"></div><div class="slot-meta"><b>—</b><small>EMPTY</small></div></div>
+          <div class="party-slot empty" data-slot="2"><span class="slot-key">3</span><div class="slot-art"></div><div class="slot-meta"><b>—</b><small>EMPTY</small></div></div>
+          <div class="party-slot empty" data-slot="3"><span class="slot-key">4</span><div class="slot-art"></div><div class="slot-meta"><b>—</b><small>EMPTY</small></div></div>
+        </div>
+
+        <div id="orb-counter" class="hud-panel">
+          <div class="orb-icon"><i></i></div>
+          <div><b id="orb-count">3</b><small>SOUL ORBS</small></div>
+          <div id="orb-recharge"><i></i></div>
+        </div>
+
+        <div id="prompt" class="hidden"><kbd>F</kbd><span id="prompt-text">Talk</span></div>
+
+        <div id="boss-bar" class="hidden">
+          <div class="boss-head"><span id="boss-title">WARDEN</span><b id="boss-name">NIAN PRIME</b><em id="boss-hp-text">420</em></div>
+          <div class="boss-health"><i id="boss-hp-fill"></i></div>
+          <div class="boss-hint" id="boss-hint">EARTH WARDEN · MOUNTAIN SHRINE</div>
+        </div>
+
+        <div id="status-strip">
+          <span id="zone-name">PIMENTO BEACH</span>
+          <span class="divider"></span>
+          <span id="fps">60 FPS</span>
+        </div>
+      </div>
+
+      <div id="title-screen" class="screen">
+        <div class="title-top">
+          <div class="brand-mark"><span class="brand-star">✦</span> PIMENTO ISLE <small>FIELD JOURNAL 01</small></div>
+          <div class="title-actions">
+            <button class="icon-btn" id="sound-toggle" aria-label="Toggle sound">SOUND ON</button>
+            <button class="icon-btn" id="title-help" aria-label="How to play">HOW TO PLAY</button>
+          </div>
+        </div>
+
+        <div class="title-main">
+          <div class="title-copy">
+            <div class="eyebrow-line"><i></i> A 3D SPIRIT-HUNTING ACTION RPG <i></i></div>
+            <h1><span class="soul">SOUL</span><span class="yard">YARD</span></h1>
+            <p class="tagline">The old spirits are waking.<br /><em>Hunt them. Bond them. Save the island.</em></p>
+            <div class="title-buttons">
+              <button id="enter-btn" class="btn-primary"><span>ENTER THE ISLAND</span><i>→</i></button>
+              <button id="intro-help" class="btn-ghost">FIELD MANUAL</button>
+            </div>
+            <div class="feature-row">
+              <span>◈ Open island</span><span>✦ Capture & bond</span><span>◎ Shooter combat</span><span>☾ 8 mythic spirits</span>
+            </div>
+          </div>
+
+          <div class="title-cards" id="title-cards">
+            <article class="spirit-card" data-creature="bakunawa">
+              <div class="card-art"><img alt="Bakunawa" /></div>
+              <div class="card-num">NO. 006</div>
+              <div class="card-body"><small>FILIPINO MYTH</small><h3>BAKUNAWA</h3><span class="type-pill shadow">SHADOW</span></div>
+            </article>
+            <article class="spirit-card featured" data-creature="kitsune">
+              <div class="card-art"><img alt="Kitsune" /></div>
+              <div class="card-num">NO. 007</div>
+              <div class="card-body"><small>JAPANESE MYTH</small><h3>KITSUNE</h3><span class="type-pill spirit">SPIRIT</span></div>
+            </article>
+            <article class="spirit-card" data-creature="anansi">
+              <div class="card-art"><img alt="Anansi" /></div>
+              <div class="card-num">NO. 001</div>
+              <div class="card-body"><small>AKAN · JAMAICAN FOLKLORE</small><h3>ANANSI</h3><span class="type-pill spirit">SPIRIT</span></div>
+            </article>
+          </div>
+        </div>
+
+        <div class="title-bottom">
+          <p><b>WASD</b> move · <b>MOUSE</b> aim · <b>LMB</b> fire · <b>RMB</b> throw soul orb · <b>SHIFT</b> dash</p>
+          <p class="touch-credit">LEFT STICK MOVE · DRAG TO LOOK · TAP FIRE / ORB · BONDS TO SWITCH</p>
+          <p class="credit">Built with Three.js · An original mythic adventure</p>
+        </div>
+      </div>
+
+      <div id="loading" class="screen solid">
+        <div class="load-mark">✦</div>
+        <h2>SOUL YARD</h2>
+        <p id="load-status">Charting the island…</p>
+        <div class="load-bar"><i id="load-fill"></i></div>
+        <small>PIMENTO ISLE · 17° 58′ N, 76° 47′ W</small>
+      </div>
+
+      <div id="howto" class="overlay hidden">
+        <div class="overlay-card wide">
+          <div class="overlay-head"><span class="eyebrow">FIELD MANUAL</span><h2>How to survive the yard</h2><button class="close-btn" data-close="howto">✕</button></div>
+          <div class="manual-grid">
+            <article><span class="manual-num">01</span><h3>Shoot to expose</h3><p>Fire aether bolts to weaken a spirit. Below 35% health its soul becomes <b>exposed</b> — it can no longer die, only be bonded.</p><div class="key-row"><kbd>LMB</kbd> fire <kbd>SHIFT</kbd> dash</div></article>
+            <article><span class="manual-num">02</span><h3>Throw the orb</h3><p>Throw a soul orb at an exposed spirit to capture it. Guardians must be defeated first. Orbs slowly recharge; wild spirits sometimes drop them.</p><div class="key-row"><kbd>RMB</kbd> or <kbd>E</kbd> throw</div></article>
+            <article><span class="manual-num">03</span><h3>Bond & battle</h3><p>Your active bond follows you into combat and lends its element to your shots. Fire beats air, air beats earth, earth beats water, water beats fire. Spirit and shadow prey on each other.</p><div class="key-row"><kbd>1–4</kbd> switch bond</div></article>
+            <article><span class="manual-num">04</span><h3>Read the island</h3><p>Purify the three Wardens at their shrines, then face Anansi Unbound at the Great Silk Cotton. Elder Nya can heal you and refill your orbs.</p><div class="key-row"><kbd>TAB</kbd> bonds <kbd>M</kbd> mute</div></article>
+          </div>
+          <div class="manual-foot">
+            <div><b>Desktop</b><p>WASD move · Space jump · Mouse look · LMB fire · RMB/E orb · Q spirit pulse · F interact · Esc pause</p></div>
+            <div><b>Touch</b><p>Left stick moves · drag right side to look · FIRE / ORB / JUMP / DASH buttons · tap TALK when it appears</p></div>
+          </div>
+          <button class="btn-primary close-howto" data-close="howto"><span>BACK TO THE ISLAND</span><i>→</i></button>
+        </div>
+      </div>
+
+      <div id="codex" class="overlay hidden">
+        <div class="overlay-card codex-card">
+          <div class="overlay-head"><span class="eyebrow">MYTHIC CODEX</span><h2>Bonds & legends</h2><button class="close-btn" data-close="codex">✕</button></div>
+          <div id="codex-grid" class="codex-grid"></div>
+          <div class="codex-foot"><p>Every spirit is drawn from a living mythology. Read their stories, then find them on the island.</p><span id="codex-count">0 / 8 BONDED</span></div>
+        </div>
+      </div>
+
+      <div id="dialogue" class="overlay hidden">
+        <div class="dialogue-card">
+          <div class="npc-portrait"><span id="npc-glyph">✺</span></div>
+          <div class="dialogue-body">
+            <span class="eyebrow" id="npc-role">VILLAGE ELDER</span>
+            <h3 id="npc-name">ELDER NYA</h3>
+            <p id="dialogue-text">…</p>
+            <div class="dialogue-actions"><button id="dialogue-next" class="btn-ghost small">CONTINUE <kbd>F</kbd></button></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="capture-overlay" class="hidden">
+        <div class="capture-flash"></div>
+        <div class="capture-orb"><i></i></div>
+        <div class="capture-copy"><span>SOUL BOND FORGED</span><h2 id="capture-name">KITSUNE</h2><p id="capture-epithet">The Nine Lanterns</p><small id="capture-origin">JAPANESE MYTHOLOGY</small></div>
+      </div>
+
+      <div id="boss-intro" class="hidden">
+        <div class="boss-intro-line"></div>
+        <span id="boss-intro-eyebrow">WARDEN OF THE MOUNTAIN</span>
+        <h2 id="boss-intro-name">NIAN PRIME</h2>
+        <p id="boss-intro-lore">The hill itself has learned to hunger.</p>
+        <div class="boss-intro-line"></div>
+      </div>
+
+      <div id="pause" class="overlay hidden">
+        <div class="overlay-card pause-card">
+          <span class="eyebrow">THE ISLAND WAITS</span>
+          <h2>Paused</h2>
+          <div class="pause-stats"><div><b id="pause-bonded">0</b><small>SPIRITS BONDED</small></div><div><b id="pause-wardens">0/3</b><small>WARDENS PURIFIED</small></div><div><b id="pause-level">1</b><small>WARDEN LEVEL</small></div></div>
+          <button class="btn-primary" id="resume-btn"><span>RESUME</span><i>→</i></button>
+          <div class="pause-links"><button class="btn-ghost small" id="pause-codex">BONDS</button><button class="btn-ghost small" id="pause-help">FIELD MANUAL</button><button class="btn-ghost small" id="pause-sound">SOUND ON</button></div>
+        </div>
+      </div>
+
+      <div id="death" class="overlay hidden">
+        <div class="death-card">
+          <span class="eyebrow">THE ISLAND REMEMBERS YOU</span>
+          <h2>SPIRIT SPENT</h2>
+          <p>The yard is not finished with you yet.</p>
+          <button class="btn-primary" id="respawn-btn"><span>RISE AGAIN</span><i>→</i></button>
+        </div>
+      </div>
+
+      <div id="victory" class="overlay hidden">
+        <div class="victory-card">
+          <span class="eyebrow">THE GREAT SILK COTTON BLOOMS</span>
+          <h2>THE ISLAND BREATHES</h2>
+          <p>Anansi is unbound, the Wardens sleep, and Pimento Isle sings again.</p>
+          <div class="victory-stats"><div><b id="victory-bonded">0</b><small>SPIRITS BONDED</small></div><div><b id="victory-level">1</b><small>FINAL LEVEL</small></div><div><b id="victory-time">00:00</b><small>TIME ON ISLAND</small></div></div>
+          <button class="btn-primary" id="victory-btn"><span>KEEP EXPLORING</span><i>→</i></button>
+        </div>
+      </div>
+
+      <div id="touch-ui" class="hidden">
+        <button id="btn-pause-touch" class="touch-pause" aria-label="Pause">Ⅱ</button>
+        <div id="joystick"><div class="stick-base"></div><div class="stick-knob"></div></div>
+        <div id="touch-actions">
+          <button id="btn-fire" class="touch-btn fire"><span>FIRE</span></button>
+          <button id="btn-orb" class="touch-btn orb"><span>ORB</span></button>
+          <button id="btn-jump" class="touch-btn small-btn"><span>JUMP</span></button>
+          <button id="btn-dash" class="touch-btn small-btn"><span>DASH</span></button>
+          <button id="btn-pulse" class="touch-btn small-btn"><span>PULSE</span></button>
+          <button id="btn-bonds" class="touch-btn small-btn"><span>BONDS</span></button>
+          <button id="btn-talk" class="touch-btn talk hidden"><span>TALK</span></button>
+        </div>
+      </div>
+
+      <div id="rotate-hint" class="hidden">
+        <span>↻</span><p>Turn your device for a wider view of the island.</p>
+      </div>
+    </div>
+  </body>
+</html>

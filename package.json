@@ -1,0 +1,19 @@
+{
+  "name": "soul-yard",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "SOUL YARD — a 3D spirit-hunting action RPG set on a Jamaica-inspired island.",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build --base ./",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "vite": "^7.1.0"
+  }
+}
